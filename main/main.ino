@@ -53,12 +53,12 @@ void Button(){
             if(analogRead(Button_Pin) > 700){
               if(analogRead(Button_Pin) > 800){
                 if(analogRead(Button_Pin) > 900){
-                    Keyboard.write("3");
+                    Keyboard.write(0x33);
                 }else{
                   Keyboard.write(KEY_RETURN);
                 }
               }else{
-                Keyboard.write("3");
+                Keyboard.write(0x31);
               }
             }
           }
