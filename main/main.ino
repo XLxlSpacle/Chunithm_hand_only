@@ -1,9 +1,13 @@
 
 #include <Keyboard.h>
+
 int Press_State [6] = {0,0,0,0,0,0};
+
+//引脚定义
 int Air_Pin     [6] = {9,10,18,19,20,21};
 int Air_Key      [] = {4,5,6,7,8,9};
-
+int Air_Switch      = 4;
+//判定阈值
 int linmindu = 200;
 
 void setup()
@@ -14,7 +18,7 @@ void setup()
       Air_Pin_Init++;
   };
 
-  
+  pinMode(4, INPUT);
 
   Keyboard.begin(); //Init keyboard emulation
   Serial.begin(9600);
@@ -23,12 +27,14 @@ void setup()
 
 void loop()
 {
-  air(1);
-  air(2);
-  air(3);
-  air(4);
-  air(5);
-  air(6);
+  if (digitalRead(Air_Switch) == 1){
+    air(1);
+    air(2);
+    air(3);
+    air(4);
+    air(5);
+    air(6);
+  }
 }
 
 //检测输出air部分
