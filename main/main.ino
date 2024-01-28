@@ -1,27 +1,20 @@
 
 #include <Keyboard.h>
-int ir1 = 9;   // Set a button to any pin
-int ir2 = 10;  // Set a button to any pin
-int ir3 = 18;  // Set a button to any pin
-int ir4 = 19;  // Set a button to any pin
-int ir5 = 20;  // Set a button to any pin
-int ir6 = 21;  // Set a button to any pin
+int Press_State [6] = {0,0,0,0,0,0};
+int Air_Pin     [6] = {9,10,18,19,20,21};
+int Air_Key      [] = {4,5,6,7,8,9};
+
 int linmindu = 200;
-int p1 = 0;
-int p2 = 0;
-int p3 = 0;
-int p4 = 0;
-int p5 = 0;
-int p6 = 0;
 
 void setup()
 {
-  pinMode(ir1, INPUT);  // Set the button as an input
-  pinMode(ir2, INPUT);  // Set the button as an input
-  pinMode(ir3, INPUT);  // Set the button as an input
-  pinMode(ir4, INPUT);  // Set the button as an input
-  pinMode(ir5, INPUT);  // Set the button as an input
-  pinMode(ir6, INPUT);  // Set the button as an input
+  int Air_Pin_Init = 0;   //pin air引脚为input
+  while(Air_Pin_Init <= 5){
+      pinMode(Air_Pin[Air_Pin_Init], INPUT); 
+      Air_Pin_Init++;
+  };
+
+  
 
   Keyboard.begin(); //Init keyboard emulation
   Serial.begin(9600);
@@ -30,188 +23,31 @@ void setup()
 
 void loop()
 {
-  iir1();
-  iir2();
-  iir3();
-  iir4();
-  iir5();
-  iir6();
+  air(1);
+  air(2);
+  air(3);
+  air(4);
+  air(5);
+  air(6);
 }
 
-void iir1(){
-    int val = analogRead(ir1);
-  if (val < linmindu)
+//检测输出air部分
+bool air(int number){
+  number--;   //将传入的编号减一，方便看
+  char key = (char)(Air_Key[number] + '0');   //转换int为char（keybord.press/release只能char）
+  if       (analogRead(Air_Pin[number]) < linmindu)   //与阈值对比
   {
-    if (p1 == 0){
-      // Keyboard.press('6');
-      // Keyboard.press('7'); 
-      // Keyboard.press('8');  
-      // Keyboard.press('9');
-      // Keyboard.press('5');
-      Keyboard.press('4');
-      p1 = 1;
+    if (Press_State[number] == 0){      //检测是否已经被按下，避免持续输出
+      Keyboard.press(key);            //按下
+      Press_State[number] = 1;      //设置已按下状态值1
+      return true;
     }
-  }else if (val > linmindu)
+  }else if (analogRead(Air_Pin[number]) > linmindu)
   {
-      if (p1 == 1){
-      // Keyboard.release('6'); 
-      // Keyboard.release('7'); 
-      // Keyboard.release('8'); 
-      // Keyboard.release('9'); 
-      // Keyboard.release('5');  
-      Keyboard.release('4');  
-      p1 = 0;
+      if (Press_State[number] == 1){
+      Keyboard.release(key);      //释放
+      Press_State[number] = 0;    //初始化状态值
+      return false;
     }
   }
-  // Serial.println(val);
-}
-
-
-void iir2(){
-    int val = analogRead(ir2);
-  if (val < linmindu)
-  {
-    if (p2 == 0){
-    // Keyboard.press('6');
-    // Keyboard.press('7'); 
-    // Keyboard.press('8');  
-    // Keyboard.press('9');
-    Keyboard.press('5');
-    // Keyboard.press('4');
-      p2 = 1;
-    }
-
-  }else if (val > linmindu)
-  {
-      if (p2 == 1){
-    // Keyboard.release('6'); 
-    // Keyboard.release('7'); 
-    // Keyboard.release('8'); 
-    // Keyboard.release('9'); 
-    Keyboard.release('5');  
-    // Keyboard.release('4');  
-      p2 = 0;
-    }
-  }
-  // Serial.println(val);
-}
-
-
-void iir3(){
-    int val = analogRead(ir3);
-   if (val < linmindu)
-  {
-    if (p3 == 0){
-    Keyboard.press('6');
-    // Keyboard.press('7'); 
-    // Keyboard.press('8');  
-    // Keyboard.press('9');
-    // Keyboard.press('5');
-    // Keyboard.press('4');
-      p3 = 1;
-    }
-
-  }else if (val > linmindu)
-  {
-      if (p3 == 1){
-    Keyboard.release('6'); 
-    // Keyboard.release('7'); 
-    // Keyboard.release('8'); 
-    // Keyboard.release('9'); 
-    // Keyboard.release('5');  
-    // Keyboard.release('4');  
-      p3 = 0;
-    }
-  }
-  // Serial.println(val);
-}
-
-
-void iir4(){
-    int val = analogRead(ir4);
-   if (val < linmindu)
-  {
-    if (p4 == 0){
-    // Keyboard.press('6');
-    Keyboard.press('7'); 
-    // Keyboard.press('8');  
-    // Keyboard.press('9');
-    // Keyboard.press('5');
-    // Keyboard.press('4');
-      p4 = 1;
-    }
-
-  }else if (val > linmindu)
-  {
-      if (p4 == 1){
-    // Keyboard.release('6'); 
-    Keyboard.release('7'); 
-    // Keyboard.release('8'); 
-    // Keyboard.release('9'); 
-    // Keyboard.release('5');  
-    // Keyboard.release('4');  
-      p4 = 0;
-    }
-  }
-  // Serial.println(val);
-}
-
-
-void iir5(){
-    int val = analogRead(ir5);
-   if (val < linmindu)
-  {
-    if (p5 == 0){
-    // Keyboard.press('6');
-    // Keyboard.press('7'); 
-    Keyboard.press('8');  
-    // Keyboard.press('9');
-    // Keyboard.press('5');
-    // Keyboard.press('4');
-      p5 = 1;
-    }
-
-  }else if (val > linmindu)
-  {
-      if (p5 == 1){
-    // Keyboard.release('6'); 
-    // Keyboard.release('7'); 
-    Keyboard.release('8'); 
-    // Keyboard.release('9'); 
-    // Keyboard.release('5');  
-    // Keyboard.release('4');  
-      p5 = 0;
-    }
-  }
-  // Serial.println(val);
-}
-
-
-void iir6(){
-    int val = analogRead(ir6);
-   if (val < linmindu)
-  {
-    if (p6 == 0){
-    // Keyboard.press('6');
-    // Keyboard.press('7'); 
-    // Keyboard.press('8');  
-    Keyboard.press('9');
-    // Keyboard.press('5');
-    // Keyboard.press('4');
-      p6 = 1;
-    }
-
-  }else if (val > linmindu)
-  {
-      if (p6 == 1){
-    // Keyboard.release('6'); 
-    // Keyboard.release('7'); 
-    // Keyboard.release('8'); 
-    Keyboard.release('9'); 
-    // Keyboard.release('5');  
-    // Keyboard.release('4');  
-      p6 = 0;
-    }
-  }
-  // Serial.println(val);
 }
