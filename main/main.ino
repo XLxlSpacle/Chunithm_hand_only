@@ -6,7 +6,8 @@ int Press_State [6] = {0,0,0,0,0,0};
 //引脚定义
 int Air_Pin     [6] = {9,10,18,19,20,21};
 int Air_Key      [] = {4,5,6,7,8,9};
-int Air_Switch      = 4;
+int Air_Switch      = 5;
+int Button_Pin      = 8;
 //判定阈值
 int linmindu = 200;
 
@@ -18,7 +19,8 @@ void setup()
       Air_Pin_Init++;
   };
 
-  pinMode(4, INPUT);
+  pinMode(Air_Switch, INPUT);
+  pinMode(Button_Pin, INPUT);
 
   Keyboard.begin(); //Init keyboard emulation
   Serial.begin(9600);
@@ -27,7 +29,10 @@ void setup()
 
 void loop()
 {
-  if (digitalRead(Air_Switch) == 1){
+
+  Button();
+
+  if (digitalRead(Air_Switch) == 1){      //air部分
     air(1);
     air(2);
     air(3);
@@ -35,6 +40,33 @@ void loop()
     air(5);
     air(6);
   }
+}
+
+//按钮部分
+void Button(){
+
+  if(analogRead(Button_Pin) > 200){
+    if(analogRead(Button_Pin) > 300){
+      if(analogRead(Button_Pin) > 400){
+        if(analogRead(Button_Pin) > 500){
+          if(analogRead(Button_Pin) > 600){
+            if(analogRead(Button_Pin) > 700){
+              if(analogRead(Button_Pin) > 800){
+                if(analogRead(Button_Pin) > 900){
+                    Keyboard.write("3");
+                }else{
+                  Keyboard.write(KEY_RETURN);
+                }
+              }else{
+                Keyboard.write("3");
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
 }
 
 //检测输出air部分
