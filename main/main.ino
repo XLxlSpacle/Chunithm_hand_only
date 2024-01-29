@@ -29,7 +29,6 @@ void setup()
 
 void loop()
 {
-
   Button();
 
   if (digitalRead(Air_Switch) == 1){      //air部分
@@ -51,14 +50,21 @@ void Button(){
         if(analogRead(Button_Pin) > 500){
           if(analogRead(Button_Pin) > 600){
             if(analogRead(Button_Pin) > 700){
-              if(analogRead(Button_Pin) > 800){
-                if(analogRead(Button_Pin) > 900){
-                    Keyboard.write(0x33);
+              if(analogRead(Button_Pin) > 820){
+                if(analogRead(Button_Pin) > 999){
+                    Keyboard.press(0x33);
+                    delay(250);
+                    Keyboard.release(0x33);
                 }else{
-                  Keyboard.write(KEY_RETURN);
+                    Keyboard.press(KEY_RETURN);
+                    delay(250);
+                    Keyboard.release(KEY_RETURN);
                 }
               }else{
-                Keyboard.write(0x31);
+                    Keyboard.press(0x31);
+                    delay(250);
+                    Keyboard.release(0x31);
+
               }
             }
           }
