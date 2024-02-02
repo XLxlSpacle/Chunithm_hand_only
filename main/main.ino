@@ -44,7 +44,7 @@ void loop()
   Button();
 
   Screen();
-
+  Serial.println(analogRead(10));
   if (digitalRead(Air_Switch) == 1){      //air部分
     air(1);
     air(2);
@@ -167,7 +167,6 @@ void Screen(){
 
 //自检
 void SelfCheck(){
-  fill_palette(0, 8, 31, 5, ForestColors_p, 255, LINEARBLEND );
   leds[0] = CRGB::Red;
   FastLED.show();
 
@@ -178,7 +177,6 @@ void SelfCheck(){
   u8g2.sendBuffer();
   delay(500);
 
-  fadeToBlackBy( leds, 30, 10);
   leds[0] = CRGB::Green;
   FastLED.show();
 
