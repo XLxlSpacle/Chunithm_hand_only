@@ -13,7 +13,7 @@ int Air_Key      [] = {4,5,6,7,8,9};
 int Air_Switch      = 5;
 int Button_Pin      = 8;
 //判定阈值
-int Decide          = 220;
+int Decide[6]       = {220,370,250,295,390,350};
 int Air_Decide[6];
 
 U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, 0, 1);
@@ -33,7 +33,7 @@ void setup()
   Keyboard.begin(); //Init keyboard emulation
   Serial.begin(9600);
   FastLED.addLeds<NEOPIXEL, 7>(leds, NUM_LEDS);
-  FastLED.setBrightness(64);
+  FastLED.setBrightness(32);
   u8g2.begin();
   u8g2.setFont(u8g2_font_haxrcorp4089_tr);
   SelfCheck();
@@ -45,7 +45,7 @@ void loop()
   Button();
 
   Screen();
-  Serial.println(digitalRead(Air_Switch));
+  Serial.println(analogRead(10));
   if (digitalRead(Air_Switch) == 1){      //air部分1
 
     leds[1] = CRGB::Green;
@@ -86,17 +86,19 @@ void Button(){
                     }
                     }
               }else{
-                          delay(100);
-                          if(analogRead(Button_Pin) > 730){
+                          // delay(100);
+                          // if(analogRead(Button_Pin) > 730){
 
-                          delay(100);
-                          if(analogRead(Button_Pin) < 740){
-                          Keyboard.press(0x31);
-                          delay(250);
-                          Keyboard.release(0x31);
-                          }}
+                          // delay(100);
+                          // if(analogRead(Button_Pin) < 740){
+                          // Keyboard.press(0x31);
+                          // delay(250);
+                          // Keyboard.release(0x31);
+                          // }}
                   }
             }
+          }else{
+            SelfCheck();
           }
         }
       }
@@ -176,10 +178,11 @@ void Screen(){
 
 //自检
 void SelfCheck(){
+  u8g2.clearBuffer();
   leds[0] = CRGB::Red;
   FastLED.show();
 
-  if(Air_Switch = 1){//如果air sw为开则自检      
+  if(digitalRead(Air_Switch) == 1){//如果air sw为开则自检      
   u8g2.drawStr(0, 8, "SelfCheck");
   u8g2.sendBuffer();
   int readings[5];
@@ -198,7 +201,7 @@ void SelfCheck(){
       leds[1] = CRGB::Red;          //如果小于100就报错
       SelfCheck_Fail(i,average);
     }else{
-      Air_Decide[i] = average - Decide ;    //结果给airdecide
+      Air_Decide[i] = average - Decide[i] ;    //结果给airdecide
       u8g2.drawStr(16, 17, Air_Decide[i]);    //在屏幕上显示结果
       u8g2.sendBuffer();
     }
@@ -207,6 +210,8 @@ void SelfCheck(){
   
   }else{
       u8g2.drawStr(0, 8, "SelfCheck Skip");
+        u8g2.sendBuffer();
+
   };
 
   u8g2.clearBuffer();
@@ -234,5 +239,7 @@ void SelfCheck_Fail(int number,int var){
   // 发送缓冲区内容到显示器
   u8g2.sendBuffer();
   delay(5000);
+  if(digitalRead(Air_Switch) == 1){
   SelfCheck();
+  };
 }
